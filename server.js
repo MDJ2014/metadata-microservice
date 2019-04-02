@@ -1,6 +1,8 @@
 var express = require('express');
 var app = express();
 var bodyParser = require("body-parser");
+var multer  = require('multer');
+var upload = multer();
 // enable CORS (https://en.wikipedia.org/wiki/Cross-origin_resource_sharing)
 // so that your API is remotely testable by FCC 
 /*
@@ -26,17 +28,22 @@ app.get("/", function (req, res) {
 
 
 // your first API endpoint... 
-app.get("/api/fileanalyse", function (req, res) {
 
-var userAgent = req.headers['user-agent'];
-var userLanguage =  req.headers["accept-language"];
-var ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
+app.post('/api/fileanalyse', upload.single("upfile"), function (req, res, next) {
+    // req.file is the `avatar` file
+    // req.body will hold the text fields, if there were any
+var file = req.file;
+var filename=file.originalname;
+var filetype = file.mimetype;
+var filesize= file.size;
 
 
- res.json({"name":ip,"type":userLanguage, "size":userAgent});
+ res.json({"name":filename,"type":filetype, "size":filesize});
+
+  })
 
 
-});
+
 
 
 
